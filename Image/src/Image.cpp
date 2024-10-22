@@ -3,7 +3,7 @@
 Image::Image(int _w, int _h) : m_width{_w},
 m_height{_h}
 {
-
+    m_pixels = std::make_unique<RGBA []>(m_width*m_height);
 }
 
 int Image::width() const

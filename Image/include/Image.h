@@ -1,7 +1,7 @@
 #ifndef IMAGE_H_
 #define IMAGE_H_
 #include "RGBA.h"
-
+#include <memory>
 
 class Image
 {
@@ -13,7 +13,7 @@ class Image
     private :
         int m_width;
         int m_height;
-
+        std::unique_ptr<RGBA []> m_pixels;
 };
 
 #endif
