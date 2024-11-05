@@ -11,6 +11,8 @@ target_include_directories(Image PRIVATE include)
 target_sources(Image PRIVATE ${CMAKE_SOURCE_DIR}/src/main.cpp )
 
 ## add another target for our tests
+find_package(OpenImageIO CONFIG REQUIRED)
+find_package(Boost COMPONENTS filesystem thread)
 
 find_package(GTest CONFIG REQUIRED)
 include(GoogleTest)
@@ -24,5 +26,5 @@ target_sources(ImageTests PRIVATE ${CMAKE_SOURCE_DIR}/tests/ImageTests.cpp
                                   ${CMAKE_SOURCE_DIR}/include/Image.h
 )
 target_link_libraries(ImageTests PRIVATE GTest::gtest GTest::gtest_main )
-
+target_link_libraries(ImageTests PRIVATE OpenImageIO::OpenImageIO Boost::filesystem Boost::thread )
 gtest_discover_tests(ImageTests)
