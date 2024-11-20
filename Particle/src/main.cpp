@@ -2,17 +2,25 @@
 #include <chrono>
 #include "Emitter.h"
 #include <fmt/format.h>
+#include <filesystem>
 int main()
 {
+  namespace fs=std::filesystem;
   std::cout<<"Particle System\n";
-  Emitter m(10);
+  // we will dump particles to the /transfer/Particles directory
+  auto folder=fs::path("/transfer/Particles/");
+  if(! fs::exists(folder))
+  {
+    fs::create_directory(folder);
+  }
+  Emitter m(2000);
   m.debug();
 
-  for(int i=0; i<10; ++i)
+  for(int i=0; i<240; ++i)
   {
     m.update();
 
-    m.writeGeo(fmt::format("test{:04d}.geo",i));
+    m.writeGeo(fmt::format("{}test{:04d}.geo",folder.c_str(),i));
   }
   return EXIT_SUCCESS;
 }

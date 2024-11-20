@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "Random.h"
+#include <algorithm>
 void Emitter::debug() const
 {
   for (auto p: m_particles)
@@ -24,6 +25,7 @@ void Emitter::resetParticle(Particle &io_p)
 {
   Vec3 emitDir(0.0f,1.0f,0.0f);
   float spread = 5.5;
+  io_p.pos={0.0f,0.0f,0.0f};
   io_p.dir = emitDir * Random::randomPositiveFloat() +
              Random::randomVectorOnSphere() * spread;
   io_p.dir.y = std::abs(io_p.dir.y);
@@ -44,7 +46,7 @@ void Emitter::writeGeo(std::string_view fname) const
   file <<"PGEOMETRY V5 \n";
   file <<"NPoints "<<m_particles.size()<<" NPrims 1 \n";
   file <<"NPointGroups 0 NPrimGroups 0 \n";
-  file <<"NPointAttrib 2 NVertexAttrib 0 NPrimAttrib 1 NAttrib 0 \n";
+  file <<"NPointAttrib 2 NVertexAttrib 0 NPrimAttrib 0 NAttrib 0 \n";
   file <<"PointAttrib \n";
   file <<"Cd 3 float 1 1 1 \n";
   file <<"pscale 1 float 0.5 \n";
@@ -56,8 +58,6 @@ void Emitter::writeGeo(std::string_view fname) const
     file << p.size <<" )\n";
     ++numParts;
   }
-  file<<"PrimitiveAttrib\n";
-  file<<"generator 1 index 1 papi \n";
   file<<"Part "<<numParts<<' ';
   for(size_t i=0; i<numParts; ++i)
   {
@@ -71,9 +71,19 @@ void Emitter::writeGeo(std::string_view fname) const
 
 void Emitter::update()
 {
+  const Vec3 gravity(0.0f,-9.81f,0.0f);
+  const float dt=0.01f;
+
   for(auto &p : m_particles)
   {
-    p.size +=0.1;
+    p.dir += gravity * dt * 0.5f;
+    p.pos += p.dir * 0.5f;
+    p.size +=0.01;
+    p.size =std::clamp(p.size, 0.0f,2.0f);
+    if(p.pos.y <= 0.0f || --p.life <=0)
+    {
+      resetParticle(p);
+    }
   }
 }
 

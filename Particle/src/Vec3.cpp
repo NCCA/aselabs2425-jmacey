@@ -9,3 +9,11 @@ Vec3 Vec3::operator+(const Vec3 &_rhs) const
 {
   return Vec3(x+_rhs.x,y+_rhs.y,z+_rhs.z);
 }
+
+Vec3 &Vec3::operator+=(const Vec3 &_rhs)
+{
+  x+=_rhs.x;
+  y+=_rhs.y;
+  z+=_rhs.z;
+  return *this;
+}
