@@ -41,8 +41,7 @@ void Emitter::resetParticle(Particle &io_p)
   ngl::Vec3 emitDir(0.0f,1.0f,0.0f);
   float spread = 5.5;
   io_p.pos.set(0.0f,0.0f,0.0f);
-  io_p.dir = emitDir * ngl::Random::randomPositiveNumber();// +
-// FIXME             ngl::Random::randomVectorOnSphere() * spread;
+  io_p.dir = emitDir * ngl::Random::randomPositiveNumber() +randomVectorOnSphere(1.0f) * spread;
   io_p.dir.m_y = std::abs(io_p.dir.m_y);
   io_p.size = 0.01;
   io_p.life = 20 + static_cast<int>(ngl::Random::randomPositiveNumber(100));
@@ -88,7 +87,7 @@ void Emitter::writeGeo(std::string_view fname) const
 void Emitter::update()
 {
   const ngl::Vec3 gravity(0.0f,-9.81f,0.0f);
-  const float dt=0.01f;
+  const float dt=0.001f;
 
   for(auto &p : m_particles)
   {
@@ -105,16 +104,17 @@ void Emitter::update()
 
 
 
-
-
-
-
-
-
-
-
-
-
+ngl::Vec3 Emitter::randomVectorOnSphere(float _radius) const
+{
+  auto phi = ngl::Random::randomPositiveNumber(M_PI * 2.0f);
+  auto costheta = ngl::Random::randomNumber();
+  auto u = ngl::Random::randomNumber();
+  auto theta = acosf(costheta);
+  auto r = _radius * std::cbrtf(u);
+  return ngl::Vec3(r*sin(theta) * cos(phi),
+                   r*sin(theta) * sin(phi),
+                   r*cos(theta));
+}
 
 
 

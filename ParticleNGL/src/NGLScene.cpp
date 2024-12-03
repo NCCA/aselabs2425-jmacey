@@ -42,7 +42,7 @@ void NGLScene::initializeGL()
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
   m_emitter = std::make_unique<Emitter>(1000);
-  m_view = ngl::lookAt({0,10.0f,10.f},{0,0,0},{0,1.0f,0});
+  m_view = ngl::lookAt({0,40.0f,40.f},{0,0,0},{0,1.0f,0});
   startTimer(10);
 }
 
@@ -60,7 +60,6 @@ void NGLScene::paintGL()
   ngl::ShaderLib::use(ngl::nglColourShader);
   ngl::ShaderLib::setUniform("MVP", m_project*m_view);
   m_emitter->draw();
-  //  m_emitter->debug();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -18,6 +18,7 @@ class Emitter
     void resetParticle(Particle &io_p);
     std::vector<Particle> m_particles;
     std::unique_ptr<ngl::AbstractVAO> m_vao;
+    [[nodiscard]] ngl::Vec3 randomVectorOnSphere(float _radius) const;
 };
 
 #endif
