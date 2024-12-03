@@ -41,8 +41,12 @@ void NGLScene::initializeGL()
   glEnable(GL_DEPTH_TEST);
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
-  m_emitter = std::make_unique<Emitter>(1000);
+  m_emitter = std::make_unique<Emitter>(1000000);
   m_view = ngl::lookAt({0,40.0f,40.f},{0,0,0},{0,1.0f,0});
+  ngl::VAOPrimitives::createLineGrid("floor",40,40,40);
+  ngl::ShaderLib::loadShader("ParticleShader","shaders/ParticleVertex.glsl","shaders/ParticleFragment.glsl");
+
+
   startTimer(10);
 }
 
@@ -57,8 +61,23 @@ void NGLScene::paintGL()
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_win.width,m_win.height);
+
+  auto rotX = ngl::Mat4::rotateX(m_win.spinXFace);
+  auto rotY = ngl::Mat4::rotateY(m_win.spinYFace);
+  auto mouseRotation = rotX * rotY;
+  mouseRotation.m_m[3][0] = m_modelPos.m_x;
+  mouseRotation.m_m[3][1] = m_modelPos.m_y;
+  mouseRotation.m_m[3][2] = m_modelPos.m_z;
+
+
   ngl::ShaderLib::use(ngl::nglColourShader);
-  ngl::ShaderLib::setUniform("MVP", m_project*m_view);
+  ngl::ShaderLib::setUniform("MVP", m_project*m_view*mouseRotation);
+  ngl::VAOPrimitives::draw("floor");
+
+
+  ngl::ShaderLib::use("ParticleShader");
+  ngl::ShaderLib::setUniform("MVP", m_project*m_view*mouseRotation);
+
   m_emitter->draw();
 }
 
