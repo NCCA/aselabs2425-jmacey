@@ -13,7 +13,7 @@ int main()
   {
     fs::create_directory(folder);
   }
-  Emitter m(2000);
+  Emitter m(20000);
   m.debug();
 
   for(int i=0; i<240; ++i)
