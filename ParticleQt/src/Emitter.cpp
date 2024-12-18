@@ -71,7 +71,7 @@ float Emitter::velocity() const
     return m_velocity;
 }
 
-void Emitter::setVelocity(float _v)
+void Emitter::setVelocity(double _v)
 {
     m_velocity=_v;
 }

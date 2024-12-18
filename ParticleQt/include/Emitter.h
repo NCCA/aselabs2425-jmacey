@@ -26,7 +26,7 @@ class Emitter : public QObject
   public slots :
     void setNumPerFrame(int _value);
     void setMaxLife(int _value);
-    void setVelocity(float _v);
+    void setVelocity(double _v);
 
   signals :
     void maxLifeChanged();
