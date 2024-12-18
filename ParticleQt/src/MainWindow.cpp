@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), m_ui(new Ui::MainW
       auto emitter=m_gl->getEmitter();
       connect(m_ui->numAlive,SIGNAL(valueChanged(int)),emitter,SLOT(setNumPerFrame(int)));
       connect(m_ui->maxLife,SIGNAL(valueChanged(int)),emitter,SLOT(setMaxLife(int)));
-      connect(m_ui->velocity,SIGNAL(valueChanged(double)),emitter,SLOT(setVelocity(float)));
+      connect(m_ui->velocity,SIGNAL(valueChanged(double)),emitter,SLOT(setVelocity(double)));
 
   });
     // reset the ui values to default
