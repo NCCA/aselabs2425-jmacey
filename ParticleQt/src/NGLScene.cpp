@@ -1,6 +1,6 @@
 #include <QMouseEvent>
 #include <QGuiApplication>
-
+#include <iostream>
 #include "NGLScene.h"
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
@@ -16,7 +16,6 @@ NGLScene::NGLScene(QWidget *parent) :QOpenGLWidget(parent)
 
 NGLScene::~NGLScene()
 {
-  std::cout<<"Shutting down NGL, removing VAO's and Shaders\n";
 }
 
 void NGLScene::spreadChanged(double _value)
@@ -47,8 +46,8 @@ void NGLScene::initializeGL()
   ngl::VAOPrimitives::createLineGrid("floor",40,40,40);
   ngl::ShaderLib::loadShader("ParticleShader","shaders/ParticleVertex.glsl","shaders/ParticleFragment.glsl");
 
-
   startTimer(10);
+  emit glInitialized();
 }
 
 void NGLScene::timerEvent(QTimerEvent *)

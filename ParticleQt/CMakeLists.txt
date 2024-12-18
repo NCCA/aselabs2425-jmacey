@@ -9,9 +9,9 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
    set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
 # Name of the project
-project(BlankQtNGLBuild)
+project(ParticleQtNGLBuild)
 # This is the name of the Exe change this and it will change everywhere
-set(TargetName BlankQtNGL)
+set(TargetName ParticleQt)
 # This will include the file NGLConfig.cmake, you need to add the location to this either using
 # -DCMAKE_PREFIX_PATH=~/NGL or as a system environment variable. 
 find_package(NGL CONFIG REQUIRED)
@@ -22,15 +22,14 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${PROJECT_SOURCE_DIR}/ui)
 # run rcc if required
 set(CMAKE_AUTORCC ON)
-# find Qt we can use either Qt6 or Qt5
-find_package(Qt6 COMPONENTS OpenGL Widgets OpenGLWidgets QUIET )
-if ( Qt6_FOUND )
-    message("Found Qt6 Using that")
-else()
-    message("Found Qt5 Using that")
-    find_package(Qt5 COMPONENTS OpenGL Widgets REQUIRED)
-endif()
 
+# find Qt we can use either Qt6 or Qt5
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets OpenGLWidgets)
+if (Qt6_FOUND)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets OpenGLWidgets)
+else()
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+endif()
 
 
 # use C++ 17
@@ -40,19 +39,27 @@ set(CMAKE_CXX_EXTENSIONS ON)
 # Set the name of the executable we want to build
 add_executable(${TargetName})
 
+
+set(UI_FILES ${PROJECT_SOURCE_DIR}/ui/MainWindow.ui)
+file(GLOB SHADER_FILES "shaders/*")
+
 target_sources(${TargetName} PRIVATE ${PROJECT_SOURCE_DIR}/src/main.cpp  
 			${PROJECT_SOURCE_DIR}/src/NGLScene.cpp  
                         ${PROJECT_SOURCE_DIR}/src/Emitter.cpp
-
 			${PROJECT_SOURCE_DIR}/src/MainWindow.cpp  
 			${PROJECT_SOURCE_DIR}/src/NGLSceneMouseControls.cpp
 			${PROJECT_SOURCE_DIR}/include/MainWindow.h  
 			${PROJECT_SOURCE_DIR}/include/NGLScene.h  
                         ${PROJECT_SOURCE_DIR}/include/Emitter.h
+                        ${UI_FILES}
+                        ${SHADER_FILES}
 )
 
-target_link_libraries(${TargetName} PRIVATE  NGL Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::OpenGLWidgets )
+target_link_libraries(${TargetName} PRIVATE  NGL Qt${QT_VERSION_MAJOR}::Widgets)
+if (Qt6_FOUND)
+    target_link_libraries(${TargetName} PRIVATE Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+endif()
+
 
 
 add_custom_target(${TargetName}CopyShadersAndfonts ALL

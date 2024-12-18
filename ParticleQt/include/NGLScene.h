@@ -48,8 +48,10 @@ class NGLScene : public QOpenGLWidget
     void resizeGL(int _w, int _h) override;
     Emitter * getEmitter() const {return this->m_emitter.get();}
 
-public slots :
-    void    spreadChanged(double _value);
+    public slots :
+        void    spreadChanged(double _value);
+    signals :
+        void glInitialized();
 
 private:
 

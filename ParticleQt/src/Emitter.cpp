@@ -37,9 +37,6 @@ void Emitter::draw()
 
   m_vao->setData(1,ngl::MultiBufferVAO::VertexData(m_colour.size()*sizeof(ngl::Vec3),m_colour[0].m_x));
   m_vao->setVertexAttributePointer(1,3,GL_FLOAT,0,0);
-
-
-//  m_vao->setVertexAttributePointer(1,3,GL_FLOAT,sizeof(Particle),6);
   m_vao->setNumIndices(m_numParticles);
   glEnable(GL_PROGRAM_POINT_SIZE);
   m_vao->draw();
@@ -59,14 +56,35 @@ void Emitter::setNumPerFrame(int _value)
 }
 
 
+void Emitter::setMaxLife(int _value)
+{
+    m_maxLife=_value;
+}
+
+int Emitter::maxLife() const
+{
+    return m_maxAlive;
+}
+
+float Emitter::velocity() const
+{
+    return m_velocity;
+}
+
+void Emitter::setVelocity(float _v)
+{
+    m_velocity=_v;
+}
+
+
 void Emitter::resetParticle(size_t _i)
 {
-  ngl::Vec3 emitDir(0.0f,1.0f,0.0f);
+  ngl::Vec3 emitDir(0.0f,m_velocity,0.0f);
   m_ppos[_i]=m_pos;
-  m_dir[_i] = emitDir * ngl::Random::randomPositiveNumber() +randomVectorOnSphere(1.0f) * m_spread;
+  m_dir[_i] = emitDir  * ngl::Random::randomPositiveNumber() +randomVectorOnSphere(1.0f) * m_spread;
   m_dir[_i].m_y = std::abs(m_dir[_i].m_y);
   m_ppos[_i].m_w = 0.1;
-  m_life[_i] = 20 + static_cast<int>(ngl::Random::randomPositiveNumber(100));
+  m_life[_i] = 50 + static_cast<int>(ngl::Random::randomPositiveNumber(m_maxLife));
   m_colour[_i] = ngl::Random::getRandomColour3();
   m_state[_i] = ParticleState::Dead;
 }
